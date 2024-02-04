@@ -40,13 +40,18 @@ export const RegistrForm = ({
     }
 
     const signupResponse = function ({ isSuccess, error }) {
+        console.log(error)
+
         if (isSuccess) {
             newState.message = 'Регистрация прошла успешно'
         } else {
-            const errorText = error[Object.keys(error)[0]]
-                ? error[Object.keys(error)[0]]
-                : 'Неизвестная ошибка'
+            const errorData = error?.data || {}
+            const errorDataKeys = Object.keys(errorData)
+            const firstError = errorData?.[errorDataKeys?.[0]]
+            const errorText = firstError || 'Неизвестная ошибка'
             newState.message = errorText
+            if (newState.message === `FETCH_ERROR`)
+                newState.message = 'Сервер не отвечает'
         }
         newState.requestOn = false
         setState(newState)
